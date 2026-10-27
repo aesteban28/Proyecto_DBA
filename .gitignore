@@ -1,0 +1,31 @@
+# Datos pesados y descargas locales
+data/*
+!data/.gitkeep
+*.zip
+*.tar.gz
+*.geojson
+*.gpkg
+*.shp
+*.csv
+
+# Python / Entornos virtuales
+__pycache__/
+*.pyc
+.venv/
+env/
+
+# IDEs y SO
+.vscode/
+.idea/
+.DS_Store
+
+# Archivos temporales de LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
