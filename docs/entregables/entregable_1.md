@@ -24,9 +24,23 @@ El objetivo del proyecto es cuantificar el area de techos disponibles para energ
 
 ---
 
-## 2. Plan de Implementacion (En Desarrollo)
+## 2. Plan de Implementacion
 
-*Pendiente: Definir en equipo las fases exactas de extraccion, transformacion y carga (ETL), asi como el flujo de procesamiento espacial en la base de datos.*
+El flujo de trabajo se divide en tres fases de ejecucion:
+
+**Fase 1 - Extraccion y Preparacion:**
+* Uso de la libreria GeoPandas en Python para leer los limites municipales del DANE (Shapefile/GeoJSON).
+* Filtrado de los 170 municipios catalogados como PDET.
+* Reproyeccion estandarizada del sistema de coordenadas a EPSG:4326 (WGS84), requerimiento estricto de MongoDB.
+
+**Fase 2 - Carga e Indexacion NoSQL:**
+* Ingesta de las fronteras municipales en la coleccion `pdet_municipalities`.
+* Descarga de huellas de edificaciones y carga distribuida por lotes (bulk write) hacia la coleccion `building_footprints` para optimizar operaciones de I/O.
+* Creacion de indices espaciales `2dsphere` post-carga para habilitar las consultas geometricas.
+
+**Fase 3 - Agregacion Espacial:**
+* Ejecucion de un Aggregation Pipeline para mapear que edificaciones se encuentran dentro de las fronteras de cada municipio.
+* Calculo acumulado del area total de techos utilizables por cada entidad territorial.
 
 ---
 
