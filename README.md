@@ -9,25 +9,22 @@
 
 ## 1. Descripcion del Proyecto
 
-Este proyecto responde a la iniciativa estrategica de la Unidad de Planeacion Minero Energetica (UPME) de Colombia para evaluar la factibilidad de soluciones de energia solar en municipios priorizados bajo los Programas de Desarrollo con Enfoque Territorial (PDET).
-
-El objetivo principal es disenar e implementar un flujo de trabajo geoespacial reproducible en una arquitectura de base de datos NoSQL (MongoDB). El sistema integra limites administrativos oficiales con datasets globales de huellas de edificaciones derivadas de imagenes satelitales, permitiendo cuantificar la cantidad y el area total de techos disponibles para la recoleccion de energia limpia en cada municipio PDET.
+Este proyecto evalua la factibilidad de soluciones de energia solar fotovoltaica en los 170 municipios de Colombia priorizados bajo los Programas de Desarrollo con Enfoque Territorial (PDET), mediante el procesamiento de datos geoespaciales masivos en una arquitectura NoSQL (MongoDB).
 
 ---
 
 ## 2. Tecnologias y Fuentes de Datos
 
 ### Stack Tecnologico
-* Base de Datos NoSQL: MongoDB (Indexacion espacial 2dsphere, consultas geometricas $geoIntersects / $geoWithin, y Aggregation Pipelines).
+* Base de Datos NoSQL: MongoDB (Indexacion espacial 2dsphere, consultas geometricas $geoIntersects / $geoWithin y Aggregation Pipelines).
 * Lenguaje y Procesamiento: Python 3 (PyMongo, GeoPandas, Shapely).
 * Control de Versiones: Git y GitHub.
-* Documentacion: LaTeX / Markdown.
 
 ### Datasets Geoespaciales
-1. Limites Municipales: Marco Geoestadistico Nacional (MGN) - DANE (Filtrado por municipios PDET).
-2. Huellas de Edificaciones:
-   * Google Open Buildings
-   * Microsoft Building Footprints
+1. Limites Municipales: Marco Geoestadistico Nacional (MGN) - DANE (Filtrado por los 170 municipios PDET).
+2. Huellas de Edificaciones (Satelital AI):
+   * Google Open Buildings (Poligonos de edificacion con metricas de confianza).
+   * Microsoft Building Footprints (Dataset vectorial comparativo de infraestructura).
 
 ---
 
@@ -36,12 +33,12 @@ El objetivo principal es disenar e implementar un flujo de trabajo geoespacial r
 .
 ├── README.md               # Descripcion general del proyecto
 ├── .gitignore              # Filtro de archivos no rastreados por Git
-├── docs/                   # Documentacion, diagramas y entregables semanales
-│   └── entregables/        # Reportes en formato PDF (Entregables 1 a 4)
+├── requirements.txt        # Dependencias de librerias Python
+├── docs/                   # Documentacion y entregables semanales
+│   └── entregables/        # Reportes tecnicos (Entregables 1 a 4)
 ├── src/                    # Codigo fuente en Python
-│   ├── ingest.py           # Scripts de carga e ingesta a MongoDB
-│   └── spatial_queries.py  # Consultas de interseccion espacial y agregacion
-└── data/                   # Datos locales de prueba (excluidos de Git)
+│   └── config.py           # Parametros de conexion y colecciones MongoDB
+└── data/                   # Datos locales excluidos de Git
 
 ---
 
@@ -54,7 +51,7 @@ El objetivo principal es disenar e implementar un flujo de trabajo geoespacial r
 
 ## 5. Plan de Entregables
 
-- [x] Semana 1: Plan de Implementacion y Diseno del Esquema NoSQL (MongoDB).
+- [/] Semana 1: Plan de Implementacion y Diseno del Esquema NoSQL (Completado - 100%).
 - [ ] Semana 2: Integracion e Indexacion Espacial de Territorios PDET (DANE/MGN).
 - [ ] Semana 3: Carga, Indexacion Espacial y EDA de Huellas de Edificaciones.
 - [ ] Semana 4: Flujo de Analisis Geoespacial Reproducible, Reporte Tecnico Final y Defensa.
