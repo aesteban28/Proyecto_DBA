@@ -1,10 +1,10 @@
 # Entregable 1: Plan de Implementacion y Diseno del Esquema NoSQL
 
-**Asignatura:** Administracion de Bases de Datos  
-**Docente:** Andres Oswaldo Calderon Romero, Ph.D.  
-**Integrantes:** Carlos Andres Pinzon Caicedo, Alejandro Esteban Padilla Gaviria  
-**Institucion:** Pontificia Universidad Javeriana  
-**Fecha:** Octubre de 2026  
+**Asignatura:** Administracion de Bases de Datos
+**Docente:** Andres Oswaldo Calderon Romero, Ph.D.
+**Integrantes:** Carlos Andres Pinzon Caicedo, Alejandro Esteban Padilla Gaviria
+**Institucion:** Pontificia Universidad Javeriana
+**Fecha:** Octubre de 2026
 
 ---
 
@@ -44,12 +44,56 @@ El flujo de trabajo se divide en tres fases de ejecucion:
 
 ---
 
-## 3. Diseno del Esquema NoSQL (En Desarrollo)
+## 3. Diseno del Esquema NoSQL
 
-*Pendiente: Definir con el equipo la estructura final del JSON para las colecciones (tipos de datos e indices compuestos).*
+El modelo de datos se compone de dos colecciones principales. MongoDB validara la estructura GeoJSON para habilitar la indexacion y el cruce espacial.
+
+### 3.1 Coleccion: pdet_municipalities
+Almacena los limites territoriales oficiales de cada municipio PDET.
+
+**Estructura del Documento:**
+{
+  "_id": "ObjectId",
+  "muni_code": "String (Codigo DANE de 5 digitos)",
+  "muni_name": "String",
+  "department": "String",
+  "subregion_pdet": "String",
+  "geometry": {
+    "type": "String (Polygon o MultiPolygon)",
+    "coordinates": "Array (Coordenadas longitudinales y latitudinales en EPSG:4326)"
+  }
+}
+
+**Indices Definidos:**
+* `{ "geometry": "2dsphere" }`: Indice espacial principal.
+* `{ "muni_code": 1 }`: Indice unico para acelerar consultas por municipio.
+
+### 3.2 Coleccion: building_footprints
+Almacena las detecciones individuales de techos por satelite.
+
+**Estructura del Documento:**
+{
+  "_id": "ObjectId",
+  "dataset_source": "String (Ej. Google Open Buildings)",
+  "confidence": "Double (Nivel de certeza de la prediccion de IA)",
+  "area_m2": "Double (Superficie del techo calculada en metros cuadrados)",
+  "geometry": {
+    "type": "String (Polygon)",
+    "coordinates": "Array (Coordenadas de los vertices del techo)"
+  }
+}
+
+**Indices Definidos:**
+* `{ "geometry": "2dsphere" }`: Indice espacial para evaluar intersecciones.
+* `{ "dataset_source": 1 }`: Indice para filtrar y comparar resultados entre Google y Microsoft.
 
 ---
 
-## 4. Pipeline de Consultas (En Desarrollo)
+## 4. Pipeline de Consultas
 
-*Pendiente: Estructurar la sintaxis del Aggregation Pipeline usando los operadores espaciales.*
+Para calcular el area total disponible por municipio, se implementara un *Aggregation Pipeline* en MongoDB con las siguientes etapas:
+
+1. **`$lookup` con pipeline personalizado:** Realiza un cruce espacial desde `building_footprints` hacia `pdet_municipalities` utilizando el operador `$geoIntersects` para identificar a que municipio pertenece cada techo.
+2. **`$unwind`:** Desanida el arreglo resultante del cruce para aplanar los documentos.
+3. **`$group`:** Agrupa los resultados usando el campo `muni_code` y utiliza el operador acumulador `$sum` sobre el campo `area_m2` para obtener los metros cuadrados totales utilizables por municipio.
+4. **`$out`:** Exporta los resultados finales a una nueva coleccion estatica para visualizacion y exportacion.
